@@ -1,0 +1,44 @@
+package ru.sm1le.snippets.ImperatorBuzz.actionbar;
+
+
+import java.lang.reflect.InvocationTargetException;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+public class ActionBar {
+
+	private Object handlePlayer;
+	
+	public ActionBar(Player player)	{
+		try {
+			this.handlePlayer = player.getClass().getMethod("getHandle").invoke(player);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendBar(String text) {
+		try {
+			Object chatSerializer = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].newInstance();
+			Object iChatBaseComponent = chatSerializer.getClass().getDeclaredMethod("a", String.class).invoke(null, "{\"text\": \"" + text + "\"}");
+			Object packetPlayOutChat = getNMSClass("PacketPlayOutChat").getConstructor(getNMSClass("IChatBaseComponent"), byte.class).newInstance(iChatBaseComponent, (byte) 2);
+			Object playerConnection = handlePlayer.getClass().getField("playerConnection").get(handlePlayer);
+			playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packetPlayOutChat);
+		} catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException | NoSuchFieldException | InvocationTargetException | NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private Class<?> getNMSClass(String clazz) {
+		String NMSVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+		try {
+			return Class.forName("net.minecraft.server." + NMSVersion + "." + clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+}
