@@ -1,7 +1,7 @@
 package ru.sm1le.snippets.ImperatorBuzz;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -9,11 +9,11 @@ import org.bukkit.potion.PotionEffectType;
 public class CheckThread extends Thread {
 	
 	private volatile boolean isRunning = false;
-	private Location checkLocation;
+	private Material checkMat;
 
-	public CheckThread(Location loc) {
+	public CheckThread(Material checkMat) {
 		super();
-		checkLocation = loc;
+		this.checkMat = checkMat;
 	}
 	
 	public void start() {
@@ -29,7 +29,7 @@ public class CheckThread extends Thread {
 	public void run() {
 		while(isRunning) {
 			for(Player current : Bukkit.getOnlinePlayers()) {
-				if(current.getLocation().equals(checkLocation)) {
+				if(current.getLocation().clone().add(0, -1, 0).getBlock().getType() == checkMat) {
 					current.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 2));
 				}
 			}
