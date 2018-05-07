@@ -33,6 +33,11 @@ public class CheckThread extends Thread {
 					current.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 2));
 				}
 			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
