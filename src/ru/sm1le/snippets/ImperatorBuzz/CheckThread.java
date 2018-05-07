@@ -18,7 +18,7 @@ public class CheckThread extends Thread {
 	
 	public void start() {
 		isRunning = true;
-		this.start();
+		super.start();
 	}
 	
 	public void stopThread() {
