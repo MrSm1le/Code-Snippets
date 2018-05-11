@@ -15,16 +15,4 @@ public class VaultTestPlugin extends JavaPlugin {
     public void onEnable() {
         econ = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
     }
-    
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
-    }
 }
